@@ -5,6 +5,7 @@ import org.example.ssm.entity.Student;
 import org.example.ssm.service.StudentService;
 import org.example.ssm.utils.JwtUtil;
 import org.example.ssm.utils.MD5Tool;
+import org.example.ssm.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -50,11 +51,27 @@ public class StudentController {
         }
     }
 
-    @GetMapping("/getStudentInfo")
-    public Result<Student> getStudentInfo(@RequestHeader(name="Authorization") String token) {
-        Map<String, Object> map = JwtUtil.parseToken(token);
-        String username =(String) map.get("username");
+    @GetMapping("/StudentInfo")
+    public Result<Student> getStudentInfo(/*@RequestHeader(name="Authorization") String token*/) {
+ /*       Map<String, Object> map = JwtUtil.parseToken(token);
+        String username =(String) map.get("username");*/
+
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+
         Student student = studentService.findByStudentName(username);
         return Result.success(student);
+    }
+
+    @PutMapping("/update")
+    public Result update(@Validated @RequestBody Student student) {
+        studentService.update(student);
+        return Result.success();
+    }
+
+    @PatchMapping("/updateAvatar")
+    public Result updateAvatar(@RequestParam String avatarUrl) {
+        studentService.updateAvatar(avatarUrl);
+        return Result.success();
     }
 }

@@ -13,4 +13,8 @@ public interface StudentService extends IService<Student> {
     Student findByStudentName(String username);
 
     void register(String username, String password);
+
+    void update(Student student);
+
+    void updateAvatar(String avatarUrl);
 }
