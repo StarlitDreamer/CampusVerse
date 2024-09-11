@@ -1,5 +1,6 @@
 package org.example.ssm.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.example.ssm.entity.Category;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -13,6 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Mapper
 public interface CategoryMapper extends BaseMapper<Category> {
 
+    @Insert("insert into category(category_name,category_alias,create_user,create_time,update_time)" +
+            "values(#{categoryName},#{categoryAlias},#{createUser},#{createTime},#{updateTime}) ")
+    void add(Category category);
 }
 
 
