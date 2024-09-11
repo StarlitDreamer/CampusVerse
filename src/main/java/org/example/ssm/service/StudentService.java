@@ -17,4 +17,6 @@ public interface StudentService extends IService<Student> {
     void update(Student student);
 
     void updateAvatar(String avatarUrl);
+
+    void updatePwd(String newPwd);
 }

@@ -22,7 +22,10 @@ public interface StudentMapper extends BaseMapper<Student> {
     void update(Student student);
 
     @Update("update student set user_pic=#{avatarUrl},update_time=now() where id=#{id}")
-    void updateAvatar(@Param("avatarUrl") String avatarUrl,@Param("id") Integer id);
+    void updateAvatar(@Param("avatarUrl") String avatarUrl, @Param("id") Integer id);
+
+    @Update("update student set password=#{md5String},update_time=now() where id=#{id}")
+    void updatePwd(@Param("md5String") String md5String, @Param("id") Integer id);
 }
 
 

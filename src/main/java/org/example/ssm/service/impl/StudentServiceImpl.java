@@ -48,6 +48,13 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
         Integer id = (Integer) map.get("id");
         studentMapper.updateAvatar(avatarUrl,id);
     }
+
+    @Override
+    public void updatePwd(String newPwd) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        studentMapper.updatePwd(MD5Tool.generateMD5(newPwd),id);
+    }
 }
 
 

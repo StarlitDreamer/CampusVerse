@@ -6,7 +6,9 @@ import org.example.ssm.service.StudentService;
 import org.example.ssm.utils.JwtUtil;
 import org.example.ssm.utils.MD5Tool;
 import org.example.ssm.utils.ThreadLocalUtil;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,8 +72,37 @@ public class StudentController {
     }
 
     @PatchMapping("/updateAvatar")
-    public Result updateAvatar(@RequestParam String avatarUrl) {
+    public Result updateAvatar(@RequestParam @URL String avatarUrl) {
         studentService.updateAvatar(avatarUrl);
+        return Result.success();
+    }
+
+    @PatchMapping("/updatePwd")
+    public Result updatePwd(@RequestBody Map<String, String> params) {
+        //获取前端传递的旧密码和新密码
+        String oldPwd = params.get("oldPwd");
+        String newPwd = params.get("newPwd");
+        String rePwd = params.get("rePwd");
+
+        //校验参数不为空
+        if (StringUtils.isEmpty(oldPwd) || StringUtils.isEmpty(newPwd) || StringUtils.isEmpty(rePwd)) {
+            return Result.error("参数不能为空");
+        }
+
+        //校验新密码和确认密码是否一致
+        if (!newPwd.equals(rePwd)) {
+            return Result.error("两次密码不一致");
+        }
+
+        //校验旧密码是否正确
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+        Student loginStudent = studentService.findByStudentName(username);
+        if (!loginStudent.getPassword().equals(MD5Tool.generateMD5(oldPwd))) {
+            return Result.error("旧密码不正确");
+        }
+
+        studentService.updatePwd(newPwd);
         return Result.success();
     }
 }
