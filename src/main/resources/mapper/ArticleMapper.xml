@@ -21,4 +21,5 @@
         cover_img,state,category_id,
         create_user,create_time,update_time
     </sql>
+
 </mapper>

@@ -41,7 +41,7 @@ public class Category implements Serializable {
     private String categoryAlias;
 
     /**
-     *
+     *创建人ID
      */
     private Integer createUser;
 
@@ -59,6 +59,9 @@ public class Category implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    //如果说某个校验项没有指定分组,默认属于Default分组
+    //分组之间可以继承, A extends B  那么A中拥有B中所有的校验项
 
     public interface Add extends Default {
 

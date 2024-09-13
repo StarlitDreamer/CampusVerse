@@ -38,7 +38,7 @@ public class Student implements Serializable {
     /**
      *
      */
-    @JsonIgnore//mvc将当前对象转成json时忽略该字段
+    @JsonIgnore//让springmvc把当前对象转换成json字符串的时候,忽略password,最终的json字符串中就没有password这个属性了
     private String password;
 
     /**
@@ -57,7 +57,7 @@ public class Student implements Serializable {
     private String email;
 
     /**
-     *
+     *用户头像地址
      */
     private String userPic;
 

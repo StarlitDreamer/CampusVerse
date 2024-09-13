@@ -2,6 +2,8 @@ package org.example.ssm.controller;
 
 import org.example.ssm.entity.Result;
 import org.example.ssm.entity.Student;
+import org.example.ssm.mapper.ArticleMapper;
+import org.example.ssm.mapper.StudentMapper;
 import org.example.ssm.service.StudentService;
 import org.example.ssm.utils.JwtUtil;
 import org.example.ssm.utils.MD5Tool;
@@ -22,6 +24,9 @@ import java.util.Map;
 public class StudentController {
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private StudentMapper studentMapper;
 
     @PostMapping("/register")
     public Result register(@Pattern(regexp = "^\\S{5,16}$") String username, @Pattern(regexp = "^\\S{5,16}$") String password) {
