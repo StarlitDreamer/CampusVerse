@@ -32,7 +32,6 @@ public class Article implements Serializable {
      *
      */
     @NotEmpty
-    @Pattern(regexp = "^\\S{1,10}$")
     private String title;
 
     /**

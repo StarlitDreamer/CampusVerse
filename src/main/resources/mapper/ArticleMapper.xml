@@ -21,5 +21,19 @@
         cover_img,state,category_id,
         create_user,create_time,update_time
     </sql>
+    <select id="list" resultType="com.ssm.entity.Article">
+        select * from article
+        <where>
+            <if test="categoryId!=null">
+                category_id=#{categoryId}
+            </if>
+
+            <if test="state!=null">
+                and state=#{state}
+            </if>
+
+            and create_user=#{userId}
+        </where>
+    </select>
 
 </mapper>
