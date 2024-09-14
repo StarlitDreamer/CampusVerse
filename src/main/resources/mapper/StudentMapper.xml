@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.ssm.mapper.StudentMapper">
+<mapper namespace="com.ssm.mapper.StudentMapper">
 
-    <resultMap id="BaseResultMap" type="org.example.ssm.entity.Student">
+    <resultMap id="BaseResultMap" type="com.ssm.entity.Student">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
