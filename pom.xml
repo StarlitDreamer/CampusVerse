@@ -128,7 +128,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.ssm.SsmApplication</mainClass>
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>
