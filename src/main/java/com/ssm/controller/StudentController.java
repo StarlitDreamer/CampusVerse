@@ -9,6 +9,8 @@ import com.ssm.utils.JwtUtil;
 import com.ssm.utils.ThreadLocalUtil;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Pattern;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/student")
@@ -23,6 +26,9 @@ import java.util.Map;
 public class StudentController {
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private StudentMapper studentMapper;
@@ -50,6 +56,9 @@ public class StudentController {
                 claims.put("id", student.getId());
                 claims.put("username", student.getUsername());
                 String token = JwtUtil.genToken(claims);
+                //把token存储到redis中
+                ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+                operations.set(token, token, 7, TimeUnit.DAYS);
                 return Result.success(token);
             } else {
                 return Result.error("密码错误");
@@ -82,7 +91,7 @@ public class StudentController {
     }
 
     @PatchMapping("/updatePwd")
-    public Result updatePwd(@RequestBody Map<String, String> params) {
+    public Result updatePwd(@RequestBody Map<String, String> params, @RequestHeader("Authorization") String token) {
         //获取前端传递的旧密码和新密码
         String oldPwd = params.get("oldPwd");
         String newPwd = params.get("newPwd");
@@ -106,7 +115,11 @@ public class StudentController {
             return Result.error("旧密码不正确");
         }
 
+        //2.调用service完成密码更新
         studentService.updatePwd(newPwd);
+        //删除redis中对应的token
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        operations.getOperations().delete(token);
         return Result.success();
     }
 }

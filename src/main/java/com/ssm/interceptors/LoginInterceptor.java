@@ -1,7 +1,11 @@
 package com.ssm.interceptors;
 
+
 import com.ssm.utils.JwtUtil;
 import com.ssm.utils.ThreadLocalUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -11,28 +15,38 @@ import java.util.Map;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //令牌验证
         String token = request.getHeader("Authorization");
-        System.out.println("拦截器拦截到请求，token为：" + token);
+        //验证token
         try {
-            System.out.println(111);
+            //从redis中获取相同的token
+            ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+            String redisToken = operations.get(token);
+            if (redisToken==null){
+                //token已经失效了
+                throw new RuntimeException();
+            }
             Map<String, Object> claims = JwtUtil.parseToken(token);
-            System.out.println("解析出来的用户信息为：" + claims);
-            // 将解析出来的用户信息放入ThreadLocal中
+
+            //把业务数据存储到ThreadLocal中
             ThreadLocalUtil.set(claims);
-            System.out.println("ThreadLocal中存放的用户信息为：" + ThreadLocalUtil.get());
-//            System.out.println(Optional.ofNullable(ThreadLocalUtil.get()));
+            //放行
             return true;
         } catch (Exception e) {
-
+            //http响应状态码为401
             response.setStatus(401);
+            //不放行
             return false;
         }
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        //清空ThreadLocal中的数据
         ThreadLocalUtil.remove();
     }
 }
