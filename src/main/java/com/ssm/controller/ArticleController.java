@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/article")
 public class ArticleController {
@@ -26,13 +29,15 @@ public class ArticleController {
     }
 
     @GetMapping
-    public Result<PageBean<Article>> list(
-            Integer pageNum,
-            Integer pageSize,
-            @RequestParam(required = false) Integer categoryId,
-            @RequestParam(required = false) String state
+    public Result<PageBean<Article>> list(HttpServletRequest request,
+                                          Integer pageNum,
+                                          Integer pageSize,
+                                          @RequestParam(required = false) Integer categoryId,
+                                          @RequestParam(required = false) String state
     ) {
-        PageBean<Article> pb =  articleService.list(pageNum,pageSize,categoryId,state);
+        String authorization = request.getHeader("Authorization");
+        System.out.println(authorization);
+        PageBean<Article> pb = articleService.list(pageNum, pageSize, categoryId, state);
         return Result.success(pb);
     }
 }
