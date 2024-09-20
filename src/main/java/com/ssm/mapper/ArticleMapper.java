@@ -22,7 +22,3 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     List<Article> list(@Param("userId")Integer userId, @Param("categoryId") Integer categoryId,@Param("state") String state);
 }
-
-
-
-

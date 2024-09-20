@@ -16,7 +16,7 @@ public interface StudentMapper extends BaseMapper<Student> {
     Student findByStudentName(@Param("username") String username);
 
     @Insert("insert into student(username, password,create_time,update_time) values(#{username}, #{password},now(),now())")
-    void add(@Param("username") String username, @Param("password") String password);
+    void add(@Param("username") String username,@Param("password") String password);
 
     @Update("update student set nickname=#{nickname},email=#{email},update_time=#{updateTime} where id=#{id}")
     void update(Student student);
